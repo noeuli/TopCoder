@@ -1,5 +1,6 @@
 package com.noeuli.topcoder;
 
+// SRM 147 Div 1 Level 2
 public class Dragons {
 	
 	private final int F = 0;	// Front
