@@ -4,66 +4,92 @@ import java.util.ArrayList;
 
 // SRM 147 Round 1 Div 1 Level 3 600pt
 public class Flags {
+    private static final String TAG = "Flags";
+    
     public long numStripes(String numFlags, String[] forbidden) {
         long stripes=0;
         long target = Long.valueOf(numFlags);
-        
-        int maxColors = forbidden.length;
         long made = 0;
         
         // convert forbidden list
         ArrayList<ForbiddenItems> forbiddenList = getForbiddenList(forbidden);
         
-        while (++stripes < target /*Long.MAX_VALUE*/) {
+        while (stripes < target /*Long.MAX_VALUE*/) {
             if (made >= target) break;
-            made += getNumOfCombinations(stripes, forbiddenList);
+            made += getNumOfCombinations(++stripes, forbiddenList);
+            Log.d(TAG, "getNumOfCombinations(" + stripes + ") accum=" + made);
         };
+        
+        Log.d(TAG, "numStripes() made=" + made + " target=" + target + " stripes=" + stripes);
         
         return stripes;
     }
-    
-    class ForbiddenItems {
-        
-    };
-    
-    private ArrayList<ForbiddenItems> getForbiddenList(String[] forbidden) {
-        return new ArrayList<ForbiddenItems>();
-    }
-    
+
     private long getNumOfCombinations(long stripes, ArrayList<ForbiddenItems> forbiddenList) {
         int maxColors = forbiddenList.size();
-        long numOfCombinations = maxColors;
-        
-        if (stripes>1) {
-            
-        }
-        
-        final String SP = " ";
-                
-        for (int color=0; color<maxColors; color++) {
-            boolean bForbidden = false;
-            bForbidden = isForbidden(color, forbidden[color]);
+        long numOfCombinations = 0;
 
-            // make forbiddenlist
-            ArrayList<Integer> forbiddenColors = new ArrayList<Integer>();
-            String forbiddenPattern = forbidden[color];
-            String[] list = forbiddenPattern.split(SP);
-            for(String value : list) {
-                forbiddenColors.add(Integer.valueOf(value));
+        Log.d(TAG, "getNumOfCombinations(" + stripes + ") maxColors=" + maxColors);
+        
+        if (stripes == 1) return maxColors;
+        
+        for (int c=0; c<maxColors; c++) {
+            ForbiddenItems forbidC = forbiddenList.get(c);
+            for (int i=0; i<stripes; i++) {
+                boolean reject = false;
+                for (int color=0; color<maxColors; color++) {
+                    if (forbidC.hasColor(color)) {
+                        reject = true;
+                    }
+                    if (reject==false) numOfCombinations++;
+                    Log.d(TAG, "c=" + c + " i=" + i + " color=" + color + " " + reject + " acc=" + numOfCombinations + " " + forbidC);
+                }
             }
-        
-        
         }
-        
 
-        
+        Log.d(TAG, "getNumOfCombinations(" + stripes + ") returns " + numOfCombinations);
+
         return numOfCombinations;
     }
     
-    private boolean isForbidden(int color, String forbidden) {
-        boolean bForbidden = false;
+    class ForbiddenItems {
+        private ArrayList<Integer> mForbiddenColors;
         
-        return bForbidden;
+        public ForbiddenItems(String forbiddenColorString) {
+            mForbiddenColors = new ArrayList<Integer>();
+            if (forbiddenColorString==null) {
+                Log.e(TAG, "ForbiddenItems class constructor error! Input string is null!");
+            } else {
+                String[] list = forbiddenColorString.split(" ");
+                for (int i=0; i<list.length; i++) {
+                    mForbiddenColors.add(Integer.valueOf(list[i]));
+                }
+            }
+        }
+        
+        public boolean hasColor(int color) {
+            return mForbiddenColors.contains(color);
+        }
+        
+        public String toString() {
+            String msg = "";
+            for (int i=0; i<mForbiddenColors.size(); i++) {
+                msg += mForbiddenColors.get(i) + " ";
+            }
+            return msg;
+        }
+    };
+    
+    private ArrayList<ForbiddenItems> getForbiddenList(String[] forbidden) {
+        ArrayList<ForbiddenItems> list = new ArrayList<ForbiddenItems>();
+        
+        if (forbidden != null) {
+            for (int i=0; i<forbidden.length; i++) {
+                list.add(new ForbiddenItems(forbidden[i]));
+            }
+        }
+        
+        return list;
     }
-
+    
 }
