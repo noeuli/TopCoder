@@ -5,6 +5,7 @@ import java.util.ArrayList;
 // SRM 147 Round 1 Div 1 Level 3 600pt
 public class Flags {
     private static final String TAG = "Flags";
+    private static final boolean LOGD = false;
     
     public long numStripes(String numFlags, String[] forbidden) {
         long stripes=0;
@@ -14,13 +15,13 @@ public class Flags {
         // convert forbidden list
         ArrayList<ForbiddenItems> forbiddenList = getForbiddenList(forbidden);
         
-        while (stripes < target /*Long.MAX_VALUE*/) {
+        while (stripes < target) {
             if (made >= target) break;
             made += getNumOfCombinations(++stripes, forbiddenList);
-            Log.d(TAG, "getNumOfCombinations(" + stripes + ") accum=" + made);
+            if (LOGD) Log.d(TAG, "getNumOfCombinations(" + stripes + ") accum=" + made);
         };
         
-        Log.d(TAG, "numStripes() made=" + made + " target=" + target + " stripes=" + stripes);
+        if (LOGD) Log.d(TAG, "numStripes() made=" + made + " target=" + target + " stripes=" + stripes);
         
         return stripes;
     }
@@ -29,7 +30,7 @@ public class Flags {
         int maxColors = forbiddenList.size();
         long numOfCombinations = 0;
 
-        Log.d(TAG, "getNumOfCombinations(" + stripes + ") maxColors=" + maxColors);
+        if (LOGD) Log.d(TAG, "getNumOfCombinations(" + stripes + ") maxColors=" + maxColors);
         
         if (stripes == 1) return maxColors;
         
@@ -42,12 +43,12 @@ public class Flags {
                         reject = true;
                     }
                     if (reject==false) numOfCombinations++;
-                    Log.d(TAG, "c=" + c + " i=" + i + " color=" + color + " " + reject + " acc=" + numOfCombinations + " " + forbidC);
+                    if (LOGD) Log.d(TAG, "c=" + c + " i=" + i + " color=" + color + " " + reject + " acc=" + numOfCombinations + " " + forbidC);
                 }
             }
         }
 
-        Log.d(TAG, "getNumOfCombinations(" + stripes + ") returns " + numOfCombinations);
+        if (LOGD) Log.d(TAG, "getNumOfCombinations(" + stripes + ") returns " + numOfCombinations);
 
         return numOfCombinations;
     }
@@ -58,7 +59,7 @@ public class Flags {
         public ForbiddenItems(String forbiddenColorString) {
             mForbiddenColors = new ArrayList<Integer>();
             if (forbiddenColorString==null) {
-                Log.e(TAG, "ForbiddenItems class constructor error! Input string is null!");
+                if (LOGD) Log.e(TAG, "ForbiddenItems class constructor error! Input string is null!");
             } else {
                 String[] list = forbiddenColorString.split(" ");
                 for (int i=0; i<list.length; i++) {
