@@ -32,7 +32,7 @@ public class TopCoder {
 	    case 5 Returns: 1
 	    */
 
-        int testCase = 2;
+        int testCase = 4;
         String numFlags = arrayNumFlags[testCase];
         String[] forbidden = arrayForbidden[testCase];
 
