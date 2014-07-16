@@ -7,46 +7,74 @@ public class Flags {
     private static final String TAG = "Flags";
     private static final boolean LOGD = false;
     
+    private ArrayList<ForbiddenItems> mForbiddenList;
+    
     public long numStripes(String numFlags, String[] forbidden) {
         long stripes=0;
         long target = Long.valueOf(numFlags);
         long made = 0;
         
         // convert forbidden list
-        ArrayList<ForbiddenItems> forbiddenList = getForbiddenList(forbidden);
+        mForbiddenList = makeForbiddenList(forbidden);
         
         while (stripes < target) {
             if (made >= target) break;
-            made += getNumOfCombinations(++stripes, forbiddenList);
-            if (LOGD) Log.d(TAG, "getNumOfCombinations(" + stripes + ") accum=" + made);
+            made += getNumOfCombinations(++stripes);
+            if (LOGD) {
+                Log.d(TAG, "getNumOfCombinations(" + stripes + ") accum=" + made + "\n");
+            }
         };
         
-        if (LOGD) Log.d(TAG, "numStripes() made=" + made + " target=" + target + " stripes=" + stripes);
+        Log.d(TAG, "numStripes() made=" + made + " target=" + target + " stripes=" + stripes);
         
         return stripes;
     }
+    
+    private long getCombination(String tag, long currStripe, long maxStripes, int prevColor, ForbiddenItems prevForbidItem) {
+        long ret = 0;
+        int maxColors = mForbiddenList.size();
 
-    private long getNumOfCombinations(long stripes, ArrayList<ForbiddenItems> forbiddenList) {
-        int maxColors = forbiddenList.size();
-        long numOfCombinations = 0;
+        if (maxStripes==1) {
+            if (LOGD) Log.d(TAG, "getCombination([[" + tag + "]], " + currStripe + ", " + maxStripes + ", " + prevColor + ", [" + prevForbidItem + "]) returns maxColor(" + maxColors + ")");
+            return maxColors;
+        }
 
-        if (LOGD) Log.d(TAG, "getNumOfCombinations(" + stripes + ") maxColors=" + maxColors);
+        String prefix = "";
+        for (int i=0; i<currStripe; i++) prefix += "-";
         
-        if (stripes == 1) return maxColors;
-        
-        for (int c=0; c<maxColors; c++) {
-            ForbiddenItems forbidC = forbiddenList.get(c);
-            for (int i=0; i<stripes; i++) {
-                boolean reject = false;
-                for (int color=0; color<maxColors; color++) {
-                    if (forbidC.hasColor(color)) {
-                        reject = true;
-                    }
-                    if (reject==false) numOfCombinations++;
-                    if (LOGD) Log.d(TAG, "c=" + c + " i=" + i + " color=" + color + " " + reject + " acc=" + numOfCombinations + " " + forbidC);
+        for (int color=0; color<maxColors; color++) {
+            if (currStripe>0 && prevForbidItem.hasColor(color)) {
+                if (LOGD) Log.d(TAG, prefix + "getCombination([[" + tag + " " + color + "]], " + currStripe + ", " + maxStripes + ", " + prevColor + ", [" + prevForbidItem + "]) Forbidden color " + color + "; continue.");
+                continue;
+            } else {
+                if (currStripe+1 < maxStripes) {
+                    ForbiddenItems forbidC = mForbiddenList.get(color);
+                    if (currStripe==0) tag = String.valueOf(color);
+                    else tag += " " + color;
+                    long get = getCombination(tag, currStripe+1, maxStripes, color, forbidC);
+                    ret += get;
+                    if (LOGD) Log.d(TAG, prefix + "getCombination([[" + tag + "]], " + currStripe + ", " + maxStripes + ", " + prevColor + ", [" + prevForbidItem + "]) color=" + color + " ret=" + ret + "; get=" + get);
+                } else {
+                    ret++;
+                    if (LOGD) Log.d(TAG, prefix + "getCombination([[" + tag + " " + color + "]], " + currStripe + ", " + maxStripes + ", " + prevColor + ", [" + prevForbidItem + "]) color=" + color + " ret=" + ret);
                 }
             }
         }
+        
+        if (LOGD) Log.d(TAG, prefix + "getCombination([[" + tag + "]], " + currStripe + ", " + maxStripes + ", " + prevColor + ", [" + prevForbidItem + "])  ret=" + ret);
+        return ret;
+    }
+
+    private long getNumOfCombinations(long stripes) {
+        int maxColors = mForbiddenList.size();
+        long numOfCombinations = 0;
+
+        if (LOGD) Log.d(TAG, "getNumOfCombinations(" + stripes + ") maxColors=" + maxColors);
+    
+        int color = 0;
+        String tag = String.valueOf(color);
+        ForbiddenItems forbidC = mForbiddenList.get(color);
+        numOfCombinations += getCombination(tag, 0, stripes, -1, forbidC);
 
         if (LOGD) Log.d(TAG, "getNumOfCombinations(" + stripes + ") returns " + numOfCombinations);
 
@@ -81,7 +109,7 @@ public class Flags {
         }
     };
     
-    private ArrayList<ForbiddenItems> getForbiddenList(String[] forbidden) {
+    private ArrayList<ForbiddenItems> makeForbiddenList(String[] forbidden) {
         ArrayList<ForbiddenItems> list = new ArrayList<ForbiddenItems>();
         
         if (forbidden != null) {

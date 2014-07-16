@@ -16,4 +16,8 @@ public class Log {
     public static final void e(String msg) {
         d(msg);
     }
+    
+    public static final void endl() {
+        System.out.println();
+    }
 }
