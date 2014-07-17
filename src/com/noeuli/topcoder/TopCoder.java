@@ -2,48 +2,50 @@ package com.noeuli.topcoder;
 
 public class TopCoder {
 	public static void main(String[] args) {
-	    
-	    String[] arrayDeck = {
-	            "KKKKKKKKKK",
-	            "KKKKKAQT23",
-	            "KKKKATQ23J",
-	            "AT68482AK6875QJ5K9573Q",
-	            "AQK262362TKKAQ6262437892KTTJA332",
-	            "J92J43KT5T879QA2QK3",
-	            "7879J4JQK24Q46K2A3TQ7T4256632TQ738JA6KA8K959J5T895",
-	            "AQKTQKATQAKTKTQTQTAKTQKATQKATQ",
-	            "A23456789TJQA23456789TJQ",
-	            
+        int[] arrayRange = {
+                1000,
+                1000000,
+                1000,
+                100,
+        };
+        int[][] arrayGuesses = {
+                {500},
+                {},
+                {},
+                {27,80},
+        };
+        int[] arrayNumLeft = {
+                1,
+                1,
+                2,
+                1,
         };
 
         /*
-        0) Returns: 0
-        All K cards are always removed from the deck.
+        0) Returns: 501
+        The example from above.
         
-        1) Returns: 1
-        The K cards are removed, leaving AQT23. 
-        AQ are then removed because they add up to 13, leaving T23. 
-        Since the deck wraps around and T and 3 add up to 13, they are also removed, just leaving the 2.
+        1) Returns: 500000
         
-        2) Returns: 6
-        Only the K cards can be removed.
+        2) Returns: 750
+        Your first intuition might be that you should guess 500 in this case, since that is right in the middle. 
+        However, lets consider what would happen if you were to guess 500. 
+        The person after you would guess 501 to maximize his or her chance of winning, and the last person would then pick 499, 
+        to maximize his or her chance of winning. 
+        This leaves you winning only if the number that was originally picked is exactly 500, at a probability of 1/1000. 
+        It turns out that your probability is maximized if you guess 750. The next person then guesses 250, and the last person guesses 251.
         
-        3) Returns: 4
-        The remaining deck is 6875.
-        
-        4) Returns: 24
-        
-        5) Returns: 9
-        6) Returns: 42
-        7) 13 - oob
-        8) 0 - oob
+        3) Returns: 26
 	    */
 
+	    
         int testCase = 8;
-        String deck = arrayDeck[testCase];
+        int range = arrayRange[testCase];
+        int[] guesses = arrayGuesses[testCase];
+        int numLeft = arrayNumLeft[testCase];
 
-        CircleGame testInstance = new CircleGame();
-        int ret = testInstance.cardsLeft(deck);
+        NumberGuessing testInstance = new NumberGuessing();
+        int ret = testInstance.bestGuess(range, guesses, numLeft);
 		
 		System.out.println(ret);
 	}
