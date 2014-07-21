@@ -2,6 +2,7 @@ package com.noeuli.topcoder;
 
 import java.util.Arrays;
 
+// SRM 149 Div 2 Level 3
 public class Pricing {
     public int maxSales(int[] price) {
         int size = price.length;
