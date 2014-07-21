@@ -2,53 +2,35 @@ package com.noeuli.topcoder;
 
 public class TopCoder {
 	public static void main(String[] args) {
-        int[] arrayRange = {
-                1000,
-                1000000,
-                1000,
-                100,
-                20,
+        int[][] arrayPrice = {
+                {9,1,5,5,5,5,4,8,80},
+                {17,50,2},
+                {130,110,90,13,6,5,4,3,0},
         };
-        int[][] arrayGuesses = {
-                {500},
-                {},
-                {},
-                {27,80},
-                {8, 13},
-        };
-        int[] arrayNumLeft = {
-                1,
-                1,
-                2,
-                1,
-                2,
-        };
-
         /*
-        0) Returns: 501
-        The example from above.
+        0) Returns: 120
+        Charge 80 to the one customer willing to pay 80.
+        Charge 8 to the 2 customers willing to pay 8 or 9.
+        Charge 5 to the 4 customers willing to pay 5.
+        Charge 4 to the one customer willing to pay 4.
+        Total sales revenue = 1*80 + 2*8 + 4*5 + 1*4. 
+        (We can put the customer who is willing to pay 1 into any of these groups since he will not buy anything at these prices.)
         
-        1) Returns: 500000
+        1) Returns: 69
+        We use just three groups, each containing one customer. 
+        We charge each customer the most she is willing to pay. 
+        Total sales revenue = 1*17 + 1*50 + 1*2
         
-        2) Returns: 750
-        Your first intuition might be that you should guess 500 in this case, since that is right in the middle. 
-        However, lets consider what would happen if you were to guess 500. 
-        The person after you would guess 501 to maximize his or her chance of winning, and the last person would then pick 499, 
-        to maximize his or her chance of winning. 
-        This leaves you winning only if the number that was originally picked is exactly 500, at a probability of 1/1000. 
-        It turns out that your probability is maximized if you guess 750. The next person then guesses 250, and the last person guesses 251.
-        
-        3) Returns: 26
+        2) Returns: 346
+        Charge each of the 4 customers willing to pay between 4 and 13 a price of 4, thereby getting a total of 16 from them. 
+        Then charge the most we can to each of the three customers who are willing to pay a lot. 4*4 + 90 + 110 + 130 = 346
 	    */
 
-	    
-        int testCase = 4;
-        int range = arrayRange[testCase];
-        int[] guesses = arrayGuesses[testCase];
-        int numLeft = arrayNumLeft[testCase];
+        int testCase = 0;
+        int[] price = arrayPrice[testCase];
 
-        NumberGuessing testInstance = new NumberGuessing();
-        int ret = testInstance.bestGuess(range, guesses, numLeft);
+        Pricing testInstance = new Pricing();
+        int ret = testInstance.maxSales(price);
 		
 		System.out.println(ret);
 	}
