@@ -7,18 +7,21 @@ public class TopCoder {
                 1000000,
                 1000,
                 100,
+                20,
         };
         int[][] arrayGuesses = {
                 {500},
                 {},
                 {},
                 {27,80},
+                {8, 13},
         };
         int[] arrayNumLeft = {
                 1,
                 1,
                 2,
                 1,
+                2,
         };
 
         /*
@@ -39,7 +42,7 @@ public class TopCoder {
 	    */
 
 	    
-        int testCase = 8;
+        int testCase = 4;
         int range = arrayRange[testCase];
         int[] guesses = arrayGuesses[testCase];
         int numLeft = arrayNumLeft[testCase];
