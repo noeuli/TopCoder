@@ -2,35 +2,35 @@ package com.noeuli.topcoder;
 
 public class TopCoder {
 	public static void main(String[] args) {
-        int[][] arrayPrice = {
-                {9,1,5,5,5,5,4,8,80},
-                {17,50,2},
-                {130,110,90,13,6,5,4,3,0},
+	    String[][] arrayDictionary = {
+	            {"HI", "YOU", "SAY"},
+	            {"ABC", "BCD", "CD", "ABCB"},
+	            {"IMPOSS", "SIBLE", "S"},
+	            {"IMPOSS", "SIBLE", "S", "IMPOSSIBLE"},
         };
+	    String[] arrayMessage = {
+	            "HIYOUSAYHI",
+	            "ABCBCD",
+	            "IMPOSSIBLE",
+	            "IMPOSSIBLE",
+	    };
         /*
-        0) Returns: 120
-        Charge 80 to the one customer willing to pay 80.
-        Charge 8 to the 2 customers willing to pay 8 or 9.
-        Charge 5 to the 4 customers willing to pay 5.
-        Charge 4 to the one customer willing to pay 4.
-        Total sales revenue = 1*80 + 2*8 + 4*5 + 1*4. 
-        (We can put the customer who is willing to pay 1 into any of these groups since he will not buy anything at these prices.)
-        
-        1) Returns: 69
-        We use just three groups, each containing one customer. 
-        We charge each customer the most she is willing to pay. 
-        Total sales revenue = 1*17 + 1*50 + 1*2
-        
-        2) Returns: 346
-        Charge each of the 4 customers willing to pay between 4 and 13 a price of 4, thereby getting a total of 16 from them. 
-        Then charge the most we can to each of the three customers who are willing to pay a lot. 4*4 + 90 + 110 + 130 = 346
+        0) Returns: "HI YOU SAY HI"
+        A word from dictionary may appear multiple times in the message.
+        1) Returns: "AMBIGUOUS!"
+        "ABC BCD" and "ABCB CD" are both possible interpretations of message.
+        2) Returns: "IMPOSSIBLE!"
+        There is no way to concatenate words from this dictionary to form "IMPOSSIBLE"
+        3) Returns: "IMPOSSIBLE"
+        This message can be decoded without ambiguity. This requires the insertion of no spaces since the entire message appears as a word in the dictionary.
 	    */
 
         int testCase = 0;
-        int[] price = arrayPrice[testCase];
+        String[] dictionary = arrayDictionary[testCase];
+        String message = arrayMessage[testCase];
 
-        Pricing testInstance = new Pricing();
-        int ret = testInstance.maxSales(price);
+        MessageMess testInstance = new MessageMess();
+        String ret = testInstance.restore(dictionary, message);
 		
 		System.out.println(ret);
 	}
