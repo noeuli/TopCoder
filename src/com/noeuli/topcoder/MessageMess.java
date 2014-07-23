@@ -2,160 +2,109 @@ package com.noeuli.topcoder;
 
 import java.util.ArrayList;
 
+// SRM 149 Div 1 Level 2 - 499.90, 
 public class MessageMess {
-    private static final String TAG = "MessageMess";
-    private static final boolean LOGD = true;
-    
-    String mResult = "";
-    
-    public String restore1(String[] dictionary, String message) {
+    public String restore(String[] dictionary, String message) {
+        String result = "";
         int size = dictionary.length;
+        int messageLen = message.length();
         int bingo = 0;
         boolean ambiguous = false;
         ArrayList<String> resultArray = new ArrayList<String>();
         
-        
-        
-        
-        
         for (int i=0; i<size; i++) {
-            if (insertSpace(i, dictionary, message)) {
+            String token = dictionary[i];
+            int start_pos = 0;
+            int foundElement = -1;
+            boolean keepWhile = true;
+            result = "";
+            
+            if (!message.startsWith(token)) {
+                continue;
+            }
+            result += token;
+            start_pos += token.length();
+            if (start_pos >= messageLen) {
                 bingo++;
-                resultArray.add(mResult);
-            }
-            if (bingo>1) {
-                ambiguous = true;
-                break;
-            }
-            mResult = "";
-        }
-        
-        if (ambiguous) return "AMBIGUOUS!";
-        else if (bingo<1) return "IMPOSSIBLE!";
-        
-        return resultArray.get(0);
-    }
-    
-    private boolean insertSpace(int start, String[] dictionary, String message) {
-        boolean made = false;
-        int nextPos = 0;
-        String token = dictionary[start];
-
-        if (message.startsWith(token, nextPos)) {
-            int messageLen = message.length();
-            int tokenLen = token.length();
-            if (tokenLen + nextPos == messageLen) {
-                // completed
-                mResult += token;
-                return true;
-            } else if (tokenLen + nextPos > messageLen) {
-                // failed
-                mResult = "";
-                return false;
+                resultArray.add(result);
+                keepWhile = false;
             } else {
-                // continue
-                mResult += token + " ";
-                nextPos += tokenLen;
-
-                boolean stop = true;
-                while (!stop || tokenLen+nextPos >= messageLen) {
-                    for (int i=0; i<dictionary.length; i++) {
-                        token = dictionary[i];
-    
-                        if (message.startsWith(token, nextPos)) {
-                            stop = false;
-                            messageLen = message.length();
-                            tokenLen = token.length();
-    
-                            if (tokenLen + nextPos == messageLen) {
-                                // completed
-                                mResult += token;
-                                made = true;
-                                break;
-                            } else if (tokenLen + nextPos > messageLen) {
-                                // failed
-                                mResult = "";
-                                break;
-                            } else {
-                                // continue
-                                mResult += token + " ";
-                                nextPos += tokenLen;
-                            }
-                        }
+                result += " ";
+            }
+            
+            int testWhile=0;
+            while (keepWhile) {
+                foundElement = -1;
+                
+                for (int j=0; j<size; j++) {
+                    String word = dictionary[j];
+                    if (message.startsWith(word, start_pos)) {
+                        Log.d("     [" + i + "] j=" + j + " word=" + word + " start_pos=" + start_pos + " messageLen=" + messageLen + " message=" + message);
+                        foundElement = j;
+                        break;
                     }
                 }
                 
+                Log.d(" testWhile=" + testWhile++ + " foundElement=" + foundElement);
                 
+                if (foundElement>=0) {
+                    result += dictionary[foundElement];
+                    start_pos += dictionary[foundElement].length();
+                    
+                    Log.d(" result=[" + result + "] start_pos=" + start_pos + " messageLen=" + messageLen);
+                    if (start_pos >= messageLen) {
+                        bingo++;
+                        resultArray.add(result);
+                    } else {
+                        result += " ";
+                    }
+                } else {
+                    keepWhile = false;
+                }
             }
-        }
-        
-        return made;
-    }
-    
-    // test
-    public String restore(String[] dictionary, String message) {
-        int size = dictionary.length;
-        int bingo = 0;
-        boolean ambiguous = false;
 
-        boolean someCondition = true;
-        NEXT_POS = 0;
+            Log.d("i=" + i + " result=[" + result + "] bingo=" + bingo + " size=" + size);
 
-        while (someCondition) {
-            if (findWord(dictionary, message)) {
-                bingo++;
-            }
             if (bingo>1) {
                 ambiguous = true;
                 break;
             }
-            someCondition = false;
         }
         
         if (ambiguous) return "AMBIGUOUS!";
         else if (bingo<1) return "IMPOSSIBLE!";
-        return RESULT;
+        return resultArray.get(0);
     }
-    
-    
-    String RESULT = "";
-    int NEXT_POS = 0;
-    
-    public boolean findWord(String[] dictionary, String message) {
-        boolean bingo = false;
-        
-        for (int i=0; i<dictionary.length; i++) {
-            if (message.startsWith(dictionary[i], NEXT_POS)) {
-                RESULT += dictionary[i];
-                NEXT_POS += dictionary[i].length();
-                bingo = true;
-                break;
-            }
-        }
-        
-        return bingo;
-    }
-    /*
-    private boolean sub(String token, int nextPos, String message) {
-        boolean completed = false;
-        if (message.startsWith(token, nextPos)) {
-            int messageLen = message.length();
-            int tokenLen = token.length();
-
-            if (tokenLen + nextPos == messageLen) {
-                // completed
-                mResult += token;
-                completed = true;
-            } else if (tokenLen + nextPos > messageLen) {
-                // failed
-                mResult = "";
-            } else {
-                // continue
-                mResult += token + " ";
-                nextPos += tokenLen;
-            }
-        }
-        return completed;
-    }
-    */
 }
+
+/* test script
+String[][] arrayDictionary = {
+        {"HI", "YOU", "SAY"},
+        {"ABC", "BCD", "CD", "ABCB"},
+        {"IMPOSS", "SIBLE", "S"},
+        {"IMPOSS", "SIBLE", "S", "IMPOSSIBLE"},
+};
+String[] arrayMessage = {
+        "HIYOUSAYHI",
+        "ABCBCD",
+        "IMPOSSIBLE",
+        "IMPOSSIBLE",
+};
+/ *
+0) Returns: "HI YOU SAY HI"
+A word from dictionary may appear multiple times in the message.
+1) Returns: "AMBIGUOUS!"
+"ABC BCD" and "ABCB CD" are both possible interpretations of message.
+2) Returns: "IMPOSSIBLE!"
+There is no way to concatenate words from this dictionary to form "IMPOSSIBLE"
+3) Returns: "IMPOSSIBLE"
+This message can be decoded without ambiguity. This requires the insertion of no spaces since the entire message appears as a word in the dictionary.
+* /
+
+int testCase = 3;
+String[] dictionary = arrayDictionary[testCase];
+String message = arrayMessage[testCase];
+
+MessageMess testInstance = new MessageMess();
+String ret = testInstance.restore(dictionary, message);
+*/
