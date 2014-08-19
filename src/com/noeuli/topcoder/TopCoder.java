@@ -2,44 +2,34 @@ package com.noeuli.topcoder;
 
 public class TopCoder {
 	public static void main(String[] args) {
-	    String[][] arrayDictionary = {
-	            {"HI", "YOU", "SAY"},
-	            {"ABC", "BCD", "CD", "ABCB"},
-	            {"IMPOSS", "SIBLE", "S"},
-	            {"IMPOSS", "SIBLE", "S", "IMPOSSIBLE"},
-	            {"A", "BA", "BAB", "AR"},
-	            {"AB", "BA", "AA", "BB", "BABAAB"},
-                {"A", "B", "C", "BAB", "BAD", "E", "F", "G", "H", "I", "J", "K", "L", "EF", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"},
-        };
-	    String[] arrayMessage = {
-	            "HIYOUSAYHI",
-	            "ABCBCD",
-	            "IMPOSSIBLE",
-	            "IMPOSSIBLE",
-	            "ABABABABABABABABABABABABABABABABABABABABABABABAR",
-	            "ABBAABBBABABBAABAAABAAAABABAAABABABAAABABABABAABAA",
-	            "BAABAABBAAABAABAABAABBBBADEEABAAAABAAABAABBBBAFBAA",
+	    int[][] arrayArrivals = {
+	            { 10, 0, 0, 4, 20 },
+	            { 0, 0, 0 },
+	            { 100, 100 },
+	            { 27, 0, 0, 0, 0, 9 },
+	            { 6, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6 },
+	    };
+	    int[] arrayNumPerDay = {
+	            8,
+	            10,
+	            10,
+	            9,
+	            3,
 	    };
         /*
-        0) Returns: "HI YOU SAY HI"
-        A word from dictionary may appear multiple times in the message.
-        1) Returns: "AMBIGUOUS!"
-        "ABC BCD" and "ABCB CD" are both possible interpretations of message.
-        2) Returns: "IMPOSSIBLE!"
-        There is no way to concatenate words from this dictionary to form "IMPOSSIBLE"
-        3) Returns: "IMPOSSIBLE"
-        This message can be decoded without ambiguity. This requires the insertion of no spaces since the entire message appears as a word in the dictionary.
-        4) "AMBIGUOUS!"
-        5) "AMBIGUOUS!"
-        6) "BAABAABBAAABAABAABAABBBBADEEABAAAABAAABAABBBBAFBAA"},"B A A B A A B B A A A B A A B A A B A A B B B BAD E E A B A A A A B A A A B A A B B B B A F B A A"
+        0) Returns: 6
+        1) Returns: 0
+        2) Returns: 20
+        3) Returns: 4
+        4) Returns: 15
 	    */
 
         int testCase = 4;
-        String[] dictionary = arrayDictionary[testCase];
-        String message = arrayMessage[testCase];
+        int[] arrivals = arrayArrivals[testCase];
+        int numPerDay = arrayNumPerDay[testCase];
 
-        MessageMess testInstance = new MessageMess();
-        String ret = testInstance.restore(dictionary, message);
+        WidgetRepairs testInstance = new WidgetRepairs();
+        int ret = testInstance.days(arrivals, numPerDay);
 		
 		System.out.println(ret);
 	}
